@@ -1,0 +1,5 @@
+- id: odoo-method-order
+  name: Odoo method order validator
+  entry: odoo-method-order
+  language: python
+  types_or: ["python"]
