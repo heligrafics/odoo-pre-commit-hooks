@@ -23,6 +23,18 @@ A collection of pre-commit hooks for Odoo projects, developed by Heligrafics S.L
    pre-commit run --all-files
    ```
 
+## Usage notes
+
+- The `odoo-method-order` hook/script accepts an optional `--exit-zero` argument.
+  If provided, the script will always return exit code 0, even if errors are found.
+  This can be useful for CI or exploratory runs where you want to see warnings but not fail the pipeline.
+
+### Example usage
+
+```bash
+python src/hg_odoo_pre_commit_hooks/check_method_order.py --exit-zero path/to/your/model.py
+```
+
 ## Development
 
 - Hooks are located in the `src/` directory.

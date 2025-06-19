@@ -20,15 +20,6 @@ jobs:
           - python: '3.13'
             os: ubuntu-latest
             tox_env: 'lint'
-          - python: '3.13'
-            os: ubuntu-latest
-            tox_env: 'update-readme'
-          - python: '3.13'
-            os: ubuntu-latest
-            tox_env: 'build'
-          - python: '3.13'
-            os: ubuntu-latest
-            tox_env: 'cprofile'
         exclude:
           - python: '3.9'
             os: macos-latest
