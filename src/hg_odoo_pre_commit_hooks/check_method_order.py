@@ -33,6 +33,7 @@ Salida:
     Devuelve un código de salida 1 si hay errores, 0 si todo está correcto.
 """
 
+import argparse
 import ast
 import sys
 
@@ -221,11 +222,20 @@ def analyze_file(filepath):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Check Odoo method order.")
+    parser.add_argument(
+        "--exit-zero",
+        action="store_true",
+        help="Always return exit code 0 (even if errors are found).",
+    )
+    parser.add_argument("files", nargs="+", help="Python files to check.")
+    args = parser.parse_args()
+
     success = True
-    for filepath in sys.argv[1:]:
+    for filepath in args.files:
         if not analyze_file(filepath):
             success = False
-    if not success:
+    if not success and not args.exit_zero:
         sys.exit(1)
 
 
