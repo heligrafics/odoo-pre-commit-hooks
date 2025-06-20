@@ -159,13 +159,15 @@ def check_order(method_order, filepath):
     """
 
     current_max_index = -1
+    errors_found = False
     for index_method, method_data in enumerate(method_order):
         cat, lineno, name = method_data
         try:
             idx = EXPECTED_ORDER.index(cat)
         except ValueError:
             print(f"{filepath}:{lineno}: Unknown category '{cat}' in '{name}'")
-            return False
+            errors_found = True
+            continue
         if idx < current_max_index:
             expected_before = EXPECTED_ORDER[current_max_index]
             prev_method = method_order[index_method - 1]
@@ -174,9 +176,10 @@ def check_order(method_order, filepath):
                 f"of order. Should be before '{expected_before}' (before "
                 f"'{prev_method[0]}->{prev_method[2]}:{prev_method[1]}')"
             )
-            return False
-        current_max_index = idx
-    return True
+            errors_found = True
+        else:
+            current_max_index = idx
+    return not errors_found
 
 
 def analyze_file(filepath):
