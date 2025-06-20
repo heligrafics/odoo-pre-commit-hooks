@@ -29,6 +29,8 @@ A collection of pre-commit hooks for Odoo projects, developed by Heligrafics S.L
   If provided, the script will always return exit code 0, even if errors are found.
   This can be useful for CI or exploratory runs where you want to see warnings but not fail the pipeline.
 
+- The script now reports **all ordering errors** found in a file, not just the first one. This helps to quickly identify and fix all method ordering issues in your Odoo models.
+
 ### Example usage
 
 ```bash

@@ -9,3 +9,4 @@ from . import onchange_methods
 from . import crud_methods
 from . import action_methods
 from . import other_methods
+from . import several_errors
