@@ -10,3 +10,4 @@ from . import crud_methods
 from . import action_methods
 from . import other_methods
 from . import several_errors
+from . import multiple_models
