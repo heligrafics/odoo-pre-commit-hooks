@@ -83,6 +83,21 @@ def is_field_assignment(node):
     return False
 
 
+def get_decorator_name(d):
+    """Extracts the name of a decorator from an AST node."""
+    if isinstance(d, ast.Name):
+        return d.id
+    if isinstance(d, ast.Attribute):
+        return d.attr
+    if isinstance(d, ast.Call):
+        if isinstance(d.func, ast.Name):
+            return d.func.id
+        if isinstance(d.func, ast.Attribute):
+            return d.func.attr
+        return ""
+    return getattr(d, "attr", "")
+
+
 def get_method_category(node):
     """Clasifica un nodo AST que representa un método o asignación en una
     categoría específica.
@@ -97,18 +112,7 @@ def get_method_category(node):
     """
 
     name = getattr(node, "name", "")
-    decorators = [
-        d.id
-        if isinstance(d, ast.Name)
-        else d.func.attr
-        if isinstance(d, ast.Call)
-        else getattr(d, "attr", "")
-        for d in getattr(
-            node,
-            "decorator_list",
-            [],
-        )
-    ]
+    decorators = [get_decorator_name(d) for d in getattr(node, "decorator_list", [])]
 
     if isinstance(node, ast.Assign):
         targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
