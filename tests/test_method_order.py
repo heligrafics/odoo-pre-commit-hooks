@@ -33,6 +33,7 @@ def run_validator(filepath):
         "crud_methods.py",
         "action_methods.py",
         "other_methods.py",
+        "multiple_models.py",
     ],
 )
 def test_not_ordered_models_fail(filename):
