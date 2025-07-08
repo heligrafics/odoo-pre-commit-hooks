@@ -64,6 +64,8 @@ CRUD_METHODS = [
     "toggle_active",
 ]
 
+MODELS_BASES = ("Model", "AbstractModel", "TransientModel")
+
 
 def is_field_assignment(node):
     """Determina si un nodo AST representa una asignación a un campo.
@@ -187,45 +189,64 @@ def check_order(method_order, filepath):
 
 
 def analyze_file(filepath):
-    """Analiza un archivo Python para determinar el orden de los métodos dentro de
-    las clases.
+    """Analiza un archivo Python para determinar el orden de los métodos dentro
+    de las clases.
 
-    Lee el archivo especificado, analiza su árbol de sintaxis abstracta (AST) y
-    extrae la información sobre el orden de los métodos definidos en cada clase.
-    Ignora docstrings y expresiones solitarias. Clasifica cada método utilizando
-    la función `get_method_category` y recopila su nombre y número de línea.
-    Finalmente, verifica si el orden de los métodos es correcto utilizando la
-    función `check_order`.
+    Si hay más de un modelo Odoo en el archivo, reporta un error y verifica el
+    orden de métodos por clase, no globalmente.
 
     Args:
         filepath (str): Ruta al archivo Python que se va a analizar.
 
     Returns:
-        tuple: Resultado de la función `check_order`, que indica si el orden es
-        correcto y proporciona detalles en caso contrario.
-
+        bool: True si el orden es correcto y no hay múltiples modelos, False
+            en caso contrario.
     """
 
     with open(filepath, encoding="utf-8") as f:
         tree = ast.parse(f.read(), filename=filepath)
 
-    method_order = []
+    model_classes = []
     for node in tree.body:
-        if isinstance(node, ast.ClassDef):
-            for subnode in node.body:
-                # Ignora docstrings o expresiones solitarias
-                if isinstance(subnode, ast.Expr) and isinstance(
-                    subnode.value,
-                    ast.Str | ast.Constant,
-                ):
-                    continue
-                cat = get_method_category(subnode)
-                name = getattr(subnode, "name", None)
-                if not name and isinstance(subnode, ast.Assign):
-                    name = subnode.targets[0].id
-                method_order.append((cat, subnode.lineno, name or "<unnamed>"))
+        if isinstance(node, ast.ClassDef) and any(
+            (
+                (
+                    isinstance(base, ast.Attribute)
+                    and base.attr in MODELS_BASES
+                    and getattr(base.value, "id", "") == "models"
+                )
+                or (isinstance(base, ast.Name) and base.id in MODELS_BASES)
+            )
+            for base in node.bases
+        ):
+            model_classes.append(node)
 
-    return check_order(method_order, filepath)
+    errors_found = False
+    if len(model_classes) > 1:
+        print(
+            f"{filepath}: ERROR: Multiple Odoo models found in the same file "
+            f"({len(model_classes)} classes)."
+        )
+        errors_found = True
+
+    for node in model_classes:
+        method_order = []
+        for subnode in node.body:
+            # Ignora docstrings o expresiones solitarias
+            if isinstance(subnode, ast.Expr) and isinstance(
+                subnode.value,
+                ast.Str | ast.Constant,
+            ):
+                continue
+            cat = get_method_category(subnode)
+            name = getattr(subnode, "name", None)
+            if not name and isinstance(subnode, ast.Assign):
+                name = subnode.targets[0].id
+            method_order.append((cat, subnode.lineno, name or "<unnamed>"))
+        if not check_order(method_order, filepath):
+            errors_found = True
+
+    return not errors_found
 
 
 def main():
