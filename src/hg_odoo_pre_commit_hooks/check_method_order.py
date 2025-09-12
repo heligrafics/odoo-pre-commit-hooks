@@ -144,7 +144,7 @@ def get_method_category(node):
         or name.startswith("_search_")
     ):
         return "compute_inverse_search"
-    if "constraints" in decorators:
+    if "constrains" in decorators or "constraints" in decorators:
         return "constraints_methods"
     if "onchange" in decorators or name.startswith("_onchange_"):
         return "onchange_methods"
