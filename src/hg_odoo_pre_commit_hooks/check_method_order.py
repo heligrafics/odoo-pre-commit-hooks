@@ -22,7 +22,7 @@ Categorías esperadas:
     - sql_constraints
     - selection_computed_methods
     - compute_inverse_search
-    - constraints_methods
+    - constrains_methods
     - onchange_methods
     - crud_methods
     - action_methods
@@ -47,7 +47,7 @@ EXPECTED_ORDER = [
     "default_methods",
     "selection_computed_methods",
     "compute_inverse_search",
-    "constraints_methods",
+    "constrains_methods",
     "onchange_methods",
     "crud_methods",
     "action_methods",
@@ -145,7 +145,7 @@ def get_method_category(node):
     ):
         return "compute_inverse_search"
     if "constrains" in decorators:
-        return "constraints_methods"
+        return "constrains_methods"
     if "onchange" in decorators or name.startswith("_onchange_"):
         return "onchange_methods"
     if name in CRUD_METHODS:
