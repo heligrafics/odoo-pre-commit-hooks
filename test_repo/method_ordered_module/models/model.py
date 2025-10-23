@@ -59,7 +59,7 @@ class FooModel(models.Model):
                 else 0
             )
 
-    @api.constraints("name")
+    @api.constrains("name")
     def _check_name_unique(self):
         for record in self:
             if not record.name:
