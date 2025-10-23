@@ -61,7 +61,7 @@ class FooModel(models.Model):
             vals["name"] = self._default_name()
         return super().create(vals)
 
-    @api.constraints("name")
+    @api.constrains("name")
     def _check_name_unique(self):
         for record in self:
             if not record.name:

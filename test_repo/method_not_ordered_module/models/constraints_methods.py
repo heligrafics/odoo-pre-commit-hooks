@@ -29,7 +29,7 @@ class FooModel(models.Model):
         ("name_unique", "UNIQUE(name)", "The name must be unique."),
     ]
 
-    @api.constraints("name")
+    @api.constrains("name")
     def _check_name_unique(self):
         for record in self:
             if not record.name:
