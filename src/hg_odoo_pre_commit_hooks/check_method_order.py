@@ -18,6 +18,7 @@ Categorías esperadas:
     - private_attributes
     - default_methods
     - field_declarations
+    - init_method
     - sql_constraints
     - selection_computed_methods
     - compute_inverse_search
@@ -40,6 +41,7 @@ import sys
 EXPECTED_ORDER = [
     "private_attributes",
     "field_declarations",
+    "init_method",
     "sql_constraints",
     "default_methods",
     "selection_computed_methods",
@@ -116,6 +118,8 @@ def get_method_category(node):
     name = getattr(node, "name", "")
     decorators = [get_decorator_name(d) for d in getattr(node, "decorator_list", [])]
 
+    if name == "init":
+        return "init_method"
     if isinstance(node, ast.Assign):
         targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
         if any(t == "_sql_constraints" for t in targets):
