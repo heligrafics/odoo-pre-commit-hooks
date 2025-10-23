@@ -35,6 +35,7 @@ Salida:
 
 import argparse
 import ast
+import re
 import sys
 
 EXPECTED_ORDER = [
@@ -81,7 +82,10 @@ def is_field_assignment(node):
     value = node.value
     if isinstance(value, ast.Call):
         if isinstance(value.func, ast.Attribute):
-            return value.func.value.id == "fields"
+            func_name = getattr(value.func.value, "id", "")
+            return bool(
+                re.match(r"^(fields|[a-zA-Z_][a-zA-Z0-9_]*_fields)$", func_name)
+            )
     return False
 
 

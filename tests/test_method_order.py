@@ -44,9 +44,16 @@ def test_not_ordered_models_fail(filename):
     assert filename in out or filename in err
 
 
-def test_ordered_model_passes():
+@pytest.mark.parametrize(
+    "filename",
+    [
+        "model.py",
+        "foo_field_declarations.py",
+    ],
+)
+def test_ordered_model_passes(filename):
     """El modelo ordenado no debe dar error."""
-    path = os.path.join(TEST_REPO, "method_ordered_module", "models", "model.py")
+    path = os.path.join(TEST_REPO, "method_ordered_module", "models", filename)
     rc, out, err = run_validator(path)
     assert not rc
     assert not out.strip()
