@@ -1,3 +1,15 @@
+## v0.4.0 (2025-10-23)
+
+### Feat
+
+- **method-order**: Add support for 'init' method category and include init_method in validation
+- **field_declarations**: Add regex support for field assignment validation and update tests for new model
+
+### Fix
+
+- Correct spelling of 'constraints' to 'constrains' in method categories
+- **get_method_category**: Remove redundant check for 'constraints' in decorators
+
 ## v0.3.0 (2025-07-09)
 
 ### Feat
