@@ -25,6 +25,10 @@ class FooModel(models.Model):
         inverse="_inverse_search_method",
     )
 
+    def init(self):
+        # Initialization logic here
+        pass
+
     _sql_constraints = [
         ("name_unique", "UNIQUE(name)", "The name must be unique."),
     ]

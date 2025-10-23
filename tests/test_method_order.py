@@ -25,6 +25,7 @@ def run_validator(filepath):
         "private_attributes.py",
         "default_methods.py",
         "field_declarations.py",
+        "init_method.py",
         "sql_constraints.py",
         "selection_computed_methods.py",
         "compute_inverse_search.py",
