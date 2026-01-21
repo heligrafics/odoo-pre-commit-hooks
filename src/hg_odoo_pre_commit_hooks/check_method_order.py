@@ -65,6 +65,10 @@ CRUD_METHODS = [
     "name_get",
     "name_search",
     "toggle_active",
+    "search_read",
+    "search_fetch",
+    "browse",
+    "read_group",
 ]
 
 MODELS_BASES = ("Model", "AbstractModel", "TransientModel")

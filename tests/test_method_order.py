@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 import pytest
 
@@ -11,7 +12,7 @@ TEST_REPO = os.path.join(BASE_DIR, "test_repo")
 def run_validator(filepath):
     """Ejecuta el validador y devuelve (returncode, stdout, stderr)."""
     result = subprocess.run(
-        ["python", SRC, filepath],
+        [sys.executable, SRC, filepath],
         capture_output=True,
         text=True,
         check=False,
@@ -50,6 +51,7 @@ def test_not_ordered_models_fail(filename):
     [
         "model.py",
         "foo_field_declarations.py",
+        "new_crud_methods.py",
     ],
 )
 def test_ordered_model_passes(filename):
