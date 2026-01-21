@@ -1,3 +1,9 @@
+## v0.5.0 (2026-01-21)
+
+### Feat
+
+- Add new CRUD methods to NewCrudInfo model and update validation tests
+
 ## v0.4.0 (2025-10-23)
 
 ### Feat
