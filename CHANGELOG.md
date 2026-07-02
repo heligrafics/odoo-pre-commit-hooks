@@ -1,3 +1,9 @@
+## v0.6.0 (2026-07-02)
+
+### Feat
+
+- **crud method**: add '_search' to the list of crud methods
+
 ## v0.5.0 (2026-01-21)
 
 ### Feat
