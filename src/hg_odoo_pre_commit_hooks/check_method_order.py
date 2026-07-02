@@ -61,6 +61,7 @@ CRUD_METHODS = [
     "copy",
     "read",
     "search",
+    "_search",
     "search_count",
     "name_get",
     "name_search",
