@@ -24,6 +24,7 @@ def run_validator(filepath):
     "filename",
     [
         "private_attributes.py",
+        "class_constants.py",
         "default_methods.py",
         "field_declarations.py",
         "init_method.py",

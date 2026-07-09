@@ -9,6 +9,8 @@ class FooModel(models.Model):
     _name = "foo.model"
     _description = "Foo Model"
 
+    CLASS_CONSTANT = "CLASS CONSTANT"
+
     name = fields.Char(
         string="Name", required=True, default=lambda s: s._default_name()
     )
