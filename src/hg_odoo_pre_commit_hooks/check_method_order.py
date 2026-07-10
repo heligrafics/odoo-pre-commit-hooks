@@ -16,10 +16,11 @@ Uso:
 
 Categorías esperadas:
     - private_attributes
-    - default_methods
+    - class_constants
     - field_declarations
     - init_method
     - sql_constraints
+    - default_methods
     - selection_computed_methods
     - compute_inverse_search
     - constrains_methods
@@ -41,6 +42,7 @@ import sys
 
 EXPECTED_ORDER = [
     "private_attributes",
+    "class_constants",
     "field_declarations",
     "init_method",
     "sql_constraints",
@@ -133,6 +135,8 @@ def get_method_category(node):
         targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
         if any(t == "_sql_constraints" for t in targets):
             return "sql_constraints"
+        if any(re.match(r"^_{0,2}[A-Z][A-Z0-9_]*$", t) for t in targets):
+            return "class_constants"
         if any(t.startswith("_") for t in targets):
             return "private_attributes"
         if is_field_assignment(node):
