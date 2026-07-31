@@ -1,3 +1,9 @@
+## v0.7.0 (2026-07-31)
+
+### Feat
+
+- **class constants**: añade constantes de clase como nuevo tipo de elemento en modelos de odoo
+
 ## v0.6.0 (2026-07-02)
 
 ### Feat
