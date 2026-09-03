@@ -37,6 +37,7 @@ def run_validator(filepath):
         "action_methods.py",
         "other_methods.py",
         "multiple_models.py",
+        "annotated_attributes.py",
     ],
 )
 def test_not_ordered_models_fail(filename):
@@ -53,6 +54,7 @@ def test_not_ordered_models_fail(filename):
         "model.py",
         "foo_field_declarations.py",
         "new_crud_methods.py",
+        "annotated_attributes.py",
     ],
 )
 def test_ordered_model_passes(filename):
@@ -62,3 +64,14 @@ def test_ordered_model_passes(filename):
     assert not rc
     assert not out.strip()
     assert not err.strip()
+
+
+def test_annotated_assign_reports_real_name():
+    """Un ast.AnnAssign fuera de orden debe reportar su nombre real, no '<unnamed>'."""
+    path = os.path.join(
+        TEST_REPO, "method_not_ordered_module", "models", "annotated_attributes.py"
+    )
+    rc, out, _err = run_validator(path)
+    assert rc == 1
+    assert "_inherit" in out
+    assert "<unnamed>" not in out
