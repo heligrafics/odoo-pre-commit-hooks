@@ -1,3 +1,9 @@
+## v0.7.1 (2026-09-03)
+
+### Fix
+
+- **method order**: recognize annotated attributes (AnnAssign) in classification
+
 ## v0.7.0 (2026-07-31)
 
 ### Feat
