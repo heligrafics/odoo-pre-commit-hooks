@@ -86,15 +86,14 @@ def is_field_assignment(node):
         bool: True si el nodo es una asignación a un campo, False en caso contrario.
     """
 
-    if not isinstance(node, ast.Assign):
+    if not isinstance(node, (ast.Assign, ast.AnnAssign)):
         return False
     value = node.value
-    if isinstance(value, ast.Call):
-        if isinstance(value.func, ast.Attribute):
-            func_name = getattr(value.func.value, "id", "")
-            return bool(
-                re.match(r"^(fields|[a-zA-Z_][a-zA-Z0-9_]*_fields)$", func_name)
-            )
+    if value is None:
+        return False
+    if isinstance(value, ast.Call) and isinstance(value.func, ast.Attribute):
+        func_name = getattr(value.func.value, "id", "")
+        return bool(re.match(r"^(fields|[a-zA-Z_][a-zA-Z0-9_]*_fields)$", func_name))
     return False
 
 
@@ -131,8 +130,11 @@ def get_method_category(node):
 
     if name == "init":
         return "init_method"
-    if isinstance(node, ast.Assign):
-        targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
+    if isinstance(node, (ast.Assign, ast.AnnAssign)):
+        if isinstance(node, ast.AnnAssign):
+            targets = [node.target.id] if isinstance(node.target, ast.Name) else []
+        else:
+            targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
         if any(t == "_sql_constraints" for t in targets):
             return "sql_constraints"
         if any(re.match(r"^_{0,2}[A-Z][A-Z0-9_]*$", t) for t in targets):
@@ -145,13 +147,9 @@ def get_method_category(node):
 
     if name in ("default_get", "default") or name.startswith("_default_"):
         return "default_methods"
-    if name.startswith("_domain_") or name.startswith("_selection_"):
+    if name.startswith(("_domain_", "_selection_")):
         return "selection_computed_methods"
-    if (
-        name.startswith("_compute_")
-        or name.startswith("_inverse_")
-        or name.startswith("_search_")
-    ):
+    if name.startswith(("_compute_", "_inverse_", "_search_")):
         return "compute_inverse_search"
     if "constrains" in decorators:
         return "constrains_methods"
@@ -252,13 +250,20 @@ def analyze_file(filepath):
             # Ignora docstrings o expresiones solitarias
             if isinstance(subnode, ast.Expr) and isinstance(
                 subnode.value,
-                ast.Str | ast.Constant,
+                (ast.Str, ast.Constant),
             ):
                 continue
             cat = get_method_category(subnode)
             name = getattr(subnode, "name", None)
-            if not name and isinstance(subnode, ast.Assign):
-                name = subnode.targets[0].id
+            if not name:
+                if isinstance(subnode, ast.Assign) and isinstance(
+                    subnode.targets[0], ast.Name
+                ):
+                    name = subnode.targets[0].id
+                elif isinstance(subnode, ast.AnnAssign) and isinstance(
+                    subnode.target, ast.Name
+                ):
+                    name = subnode.target.id
             method_order.append((cat, subnode.lineno, name or "<unnamed>"))
         if not check_order(method_order, filepath):
             errors_found = True
